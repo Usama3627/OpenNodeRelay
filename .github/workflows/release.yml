@@ -23,7 +23,7 @@ jobs:
             name: opennoderelay-daemon-macos-x86_64
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -38,7 +38,7 @@ jobs:
         run: mv daemon/target/${{ matrix.target }}/release/opennoderelay-daemon.exe daemon/target/${{ matrix.target }}/release/${{ matrix.name }}
         if: matrix.os == 'windows-latest'
       - name: Upload Binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: daemon/target/${{ matrix.target }}/release/${{ matrix.name }}
@@ -47,23 +47,23 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 'latest'
       - name: Install dependencies
         run: npm ci
         working-directory: ./mobile
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
       - name: Build APK
         run: cd mobile/android && ./gradlew assembleRelease
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
           path: mobile/android/app/build/outputs/apk/release/app-release.apk
@@ -74,11 +74,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: artifacts/**/*
         env:
