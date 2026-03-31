@@ -1,6 +1,6 @@
 # OpenNodeRelay
 
-[![CI](https://github.com/usamaz/OpenNodeRelay/actions/workflows/ci.yml/badge.svg)](https://github.com/usamaz/OpenNodeRelay/actions/workflows/ci.yml)
+[![CI](https://github.com/usama3627/OpenNodeRelay/actions/workflows/ci.yml/badge.svg)](https://github.com/usama3627/OpenNodeRelay/actions/workflows/ci.yml)
 
 Welcome to **OpenNodeRelay** (formerly BYOC). This project is all about connecting your phone directly to your PC, allowing you to run shell commands, view live logs, and manage processes from absolutely anywhere—without having to expose your PC to the internet or worry about complex VPNs.
 
