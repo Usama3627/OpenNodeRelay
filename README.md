@@ -6,6 +6,13 @@ Welcome to **OpenNodeRelay** (formerly BYOC). This project is all about connecti
 
 ![Architecture Diagram](docs/architecture.png)
 
+## Features
+
+- **Direct P2P Connection:** Uses WebRTC to establish a secure, fast, and direct connection between your phone and PC—no middleman server handling your data.
+- **Remote Terminal:** Run commands on your PC directly from your phone with a fully featured, live-rendering terminal UI.
+- **Process Management:** View and manage running processes seamlessly from anywhere.
+- **No Network Configuration Required:** Easily connect without needing to expose your PC, or set up port forwarding, or deal with complex VPNs.
+
 ## How It Works
 
 It's actually pretty simple. It uses WebRTC, the exact same tech that runs video calls, but instead of streaming video, we use it to stream raw data directly between your devices.
@@ -51,6 +58,13 @@ cd mobile/ios
 npx pod-install
 ```
 Then open `OpenNodeRelay.xcworkspace` in Xcode, configure your signing profiles, and build to your device.
+
+## Future Features
+
+- **Daemon GUI & Auto-Start:** Adding a simple graphical user interface to the daemon and enabling it to automatically start on OS boot.
+- **Persistent Connections:** Once a user authenticates the code, the connection details (like IP addresses) are remembered in settings. This allows users to easily reconnect their PC and mobile device directly in the future without needing the Cloudflare signaling server again, regardless of the network.
+- **Live System Dashboard:** A clean UI in the mobile app to monitor real-time CPU, RAM, Disk usage, and temperatures of your PC.
+
 
 ## Feedback and Contributions
 
