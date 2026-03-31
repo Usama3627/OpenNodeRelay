@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-daemon:
+    name: Build Daemon (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            name: opennoderelay-daemon-linux-x86_64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            name: opennoderelay-daemon-windows-x86_64.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            name: opennoderelay-daemon-macos-x86_64
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+        working-directory: ./daemon
+      - name: Rename executable
+        run: mv daemon/target/${{ matrix.target }}/release/opennoderelay-daemon daemon/target/${{ matrix.target }}/release/${{ matrix.name }}
+        if: matrix.os != 'windows-latest'
+      - name: Rename executable (Windows)
+        run: mv daemon/target/${{ matrix.target }}/release/opennoderelay-daemon.exe daemon/target/${{ matrix.target }}/release/${{ matrix.name }}
+        if: matrix.os == 'windows-latest'
+      - name: Upload Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: daemon/target/${{ matrix.target }}/release/${{ matrix.name }}
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'latest'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./mobile
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Build APK
+        run: cd mobile/android && ./gradlew assembleRelease
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: mobile/android/app/build/outputs/apk/release/app-release.apk
+
+  publish-release:
+    name: Publish Release
+    needs: [build-daemon, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
